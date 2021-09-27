@@ -33,7 +33,7 @@ class ImageFolder(Dataset):
 
 class ImageFolderPath(Dataset):
     def __init__(self, root_dir, transform=None):
-        super(ImageFolder, self).__init__()
+        super(ImageFolderPath, self).__init__()
         self.data = []
         self.root_dir = root_dir
         self.transform = transform
