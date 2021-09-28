@@ -3,12 +3,18 @@ from __future__ import print_function, division
 import torch
 import time
 import copy
+import matplotlib.pyplot as plt
+import numpy as np
 
 def train_model(model, criterion, optimizer, scheduler, dataloaders, device, dataset_sizes, num_epochs=25):
     since = time.time()
 
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
+    train_loss = []
+    val_loss = []
+    train_acc = []
+    val_acc = []
 
     for epoch in range(num_epochs):
         print('Epoch {}/{}'.format(epoch, num_epochs - 1))
@@ -56,6 +62,13 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, device, dat
             print('{} Loss: {:.4f} Acc: {:.4f}'.format(
                 phase, epoch_loss, epoch_acc))
 
+            if phase == 'train':
+                train_loss.append(epoch_loss)
+                train_acc.append(epoch_acc)
+            else:
+                val_loss.append(epoch_loss)
+                val_acc.append(epoch_acc)
+
             # deep copy the model
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
@@ -67,6 +80,19 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, device, dat
     print('Training complete in {:.0f}m {:.0f}s'.format(
         time_elapsed // 60, time_elapsed % 60))
     print('Best val Acc: {:4f}'.format(best_acc))
+
+    x = np.arange(num_epochs)
+    plt.subplot(221)
+    plt.plot(x, train_loss, c='red', label='train loss')
+    plt.plot(x, val_loss, c='blue', label='val loss')
+    plt.legend(loc='best')
+
+    plt.subplot(222)
+    plt.plot(x, train_acc, c='red', label='train acc')
+    plt.plot(x, val_acc, c='blue', label='val acc')
+    plt.legend(loc='best')
+
+    plt.show()
 
     # load best model weights
     model.load_state_dict(best_model_wts)
