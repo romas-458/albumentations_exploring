@@ -51,7 +51,7 @@ def draw_activation_map(model, image, label, train_dataset, width = 128, height 
     print('true class: ', train_dataset.class_names[label])
     print('predicated class: ', train_dataset.class_names[idx[0].numpy()])
 
-    CAMs = returnCAM(features_blobs[0], weight_softmax, [idx[0]])
+    CAMs = returnCAM(features_blobs[0], weight_softmax, [idx[0]], (width, height))
     heatmap = cv2.applyColorMap(cv2.resize(CAMs[0], (width, height)), cv2.COLORMAP_JET)
 
     image = image.reshape((3, width, height)).numpy().transpose((1, 2, 0))
