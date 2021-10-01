@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 import torch
-from torch import functional as F
+import torch.nn.functional as F
 import matplotlib.pyplot as plt
 
 def returnCAM(feature_conv, weight_softmax, class_idx, size_upsample = (128, 128)):
@@ -68,7 +68,7 @@ def draw_activation_map(model, image, label, train_dataset, width = 128, height 
     heatmap = np.interp(heatmap, [0, 255], [0, 1])
 
     result = 0.5 * heatmap + 0.5 * image
-    
+
     plt.imshow(image)
     plt.show()
     # plt.imshow(heatmap)
