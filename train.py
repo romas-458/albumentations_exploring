@@ -73,6 +73,8 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, device, dat
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
+                torch.save(best_model_wts, 'resnet.pt')
+                print('Improvement-Detected, save-model')
 
         print()
 
