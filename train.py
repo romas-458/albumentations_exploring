@@ -102,7 +102,7 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, device, dat
     return model
 
 
-def train_model_wandb_log(model, criterion, optimizer, scheduler, dataloaders, device, dataset_sizes, num_epochs=25):
+def train_model_wandb_log(model, criterion, optimizer, scheduler, dataloaders, device, dataset_sizes, num_epochs=25, loss_fn_type = 'crossEntropy'):
     since = time.time()
 
     best_model_wts = copy.deepcopy(model.state_dict())
@@ -139,7 +139,13 @@ def train_model_wandb_log(model, criterion, optimizer, scheduler, dataloaders, d
                 with torch.set_grad_enabled(phase == 'train'):
                     outputs = model(inputs)
                     _, preds = torch.max(outputs, 1)
-                    loss = criterion(outputs, labels)
+
+                    if loss_fn_type == 'bce':
+                        onehot_labels = torch.nn.functional.one_hot(labels, 2)
+                        onehot_labels = onehot_labels.type_as(outputs)
+                        loss = criterion(outputs, onehot_labels)
+                    else:
+                        loss = criterion(outputs, labels)
 
                     # backward + optimize only if in training phase
                     if phase == 'train':
