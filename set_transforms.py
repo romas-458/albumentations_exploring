@@ -232,6 +232,53 @@ data_transforms_sasha = {
     ),
 }
 
+data_transforms_roma_224 = {
+    'train': A.Compose(
+        [
+            # A.Resize(height, width, cv2.INTER_NEAREST, p=1),
+            A.SmallestMaxSize(max_size=224),
+            # A.CenterCrop(height=224, width=224),
+            A.HorizontalFlip(p=0.5),
+            # # A.IAAAdditiveGaussianNoise(p=0.2),
+            # # A.IAAPerspective(p=0.5),
+            # A.RGBShift(r_shift_limit=15, g_shift_limit=15, b_shift_limit=15, p=0.5),
+            A.ShiftScaleRotate(p=0.5, shift_limit=0.05, scale_limit=0.05, rotate_limit=20, border_mode=0, value=0, mask_value=0),
+            A.OneOf(
+                [
+                    A.RandomBrightness(p=1),
+                    A.RandomGamma(p=1),
+                ],
+                p=0.5,
+            ),
+            # A.OneOf(
+            #     [
+            #         A.IAASharpen(p=1),
+            #         A.Blur(blur_limit=3, p=1),
+            #         A.MotionBlur(blur_limit=3, p=1),
+            #     ],
+            #     p=0.5,
+            # ),
+            # A.OneOf(
+            #     [
+            #         A.RandomContrast(p=1),
+            #         A.HueSaturationValue(p=1),
+            #     ],
+            #     p=0.5,
+            # ),
+            A.Normalize(mean=means, std=stds, p=1),
+            ToTensorV2(),
+        ], p=1
+    ),
+    'val': A.Compose(
+        [
+            A.SmallestMaxSize(max_size=224),
+            # A.Resize(height, width, cv2.INTER_NEAREST, p=1),
+            A.Normalize(mean=means, std=stds, p=1),
+            ToTensorV2(),
+        ], p=1
+    ),
+}
+
 # Data augmentation and normalization for training
 # Just normalization for validation
 data_transforms = {
